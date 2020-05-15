@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width">
+		<title>WASM Image</title>
+		<script type="module">
+			async function init() {
+			const { instance } = await WebAssembly.instantiateStreaming(
+				fetch("./bare_metal_wasm.wasm"),
+				{
+					"env": {
+						"js_sin": Math.sin,
+					},
+				 }
+		);
+
+		const answer = instance.exports.the_answer();
+		console.log(answer);
+
+		const width = 600;
+		const height = 600;
+
+		const canvas = document.getElementById("demo-canvas");
+		canvas.width = width;
+		canvas.height = height;
+
+		const buffer_address = instance.exports.BUFFER.value;
+		const image = new ImageData(
+			new Uint8ClampedArray(
+				instance.exports.memory.buffer,
+				buffer_address,
+				4 * width * height,
+			),
+			width,
+		);
+
+		const ctx = canvas.getContext("2d");
+
+		  // CHANGES BEGIN HERE
+		const render = () => {
+		  instance.exports.go();
+		  ctx.putImageData(image, 0, 0);
+		  requestAnimationFrame(render);
+		};
+
+		render();
+	}
+
+	init();
+		</script>
+	</head>
+	<body>
+		<canvas id="demo-canvas"></canvas>
+	</body>
+</html>
