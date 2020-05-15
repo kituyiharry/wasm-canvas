@@ -1,5 +1,7 @@
 ## WASM Example
 
+![screenshot](./wasm.png "WASM")
+
 WebAssembly example that creates an animation on a 2d canvas
 to view it you need
 
