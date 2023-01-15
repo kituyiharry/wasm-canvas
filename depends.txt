@@ -1,0 +1,4 @@
+wabt - webassembly binary toolkit
+wasmtime
+binaryen
+rust wasm32 toolchain
